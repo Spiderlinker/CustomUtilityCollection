@@ -43,7 +43,7 @@ public class Validate {
    * @return passed string if its length is equal to specified length
    * @throws IllegalArgumentException If the string is not equal specified length
    */
-  public static String requireSpecificLength(String string, int length) throws IllegalArgumentException {
+  public static String requireSpecificLength(String string, int length) {
     if (string.length() != length) {
       throw new IllegalArgumentException("Length of String has to be " + length);
     }
