@@ -2,12 +2,9 @@ package de.spiderlinker.validate;
 
 public class CharacterUtils {
 
-//  public static int getDigitOrLetterSubtractedBy(char c, int subtractBy) {
-//    Validate.requireLetterOrDigit(c);
-//    return Character.isDigit(c)
-//        ? Character.getNumericValue(c)
-//        : Character.toUpperCase(c) - subtractBy;
-//  }
+  private CharacterUtils() {
+    // Utility class
+  }
 
   public static int getLastDigitOf(int number) {
     String numberAsString = String.valueOf(number);

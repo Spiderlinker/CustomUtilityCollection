@@ -2,6 +2,10 @@ package de.spiderlinker.validate;
 
 public class Validate {
 
+  private Validate() {
+    // Utility class
+  }
+
   /**
    * Returns the passed object if it is not null. Otherwise a NullPointerException will be thrown.
    *

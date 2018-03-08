@@ -8,10 +8,6 @@ import static org.junit.Assert.*;
 public class CharacterUtilsTest {
 
   @Test
-  public void getDigitOrLetterSubtractedBy() {
-  }
-
-  @Test
   public void getLastDigitOfSingleNumber() {
     int number = 1;
     Assert.assertEquals(number, CharacterUtils.getLastDigitOf(number));

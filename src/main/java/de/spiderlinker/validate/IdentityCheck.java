@@ -2,9 +2,11 @@ package de.spiderlinker.validate;
 
 public class IdentityCheck {
 
-  //  private static final int LETTER_BEGINNING_INDEX = 10;
   private static final int IDENTITY_LENGTH = 10;
-//  private static final int SUBTRACT_VALUE = 'A' - LETTER_BEGINNING_INDEX;
+
+  private IdentityCheck() {
+    // Utility class
+  }
 
   public static boolean isIdValid(String id) {
     Validate.requireNotNull(id);
