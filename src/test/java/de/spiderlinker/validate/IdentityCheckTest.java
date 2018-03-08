@@ -51,6 +51,16 @@ public class IdentityCheckTest {
     Assert.assertFalse(IdentityCheck.isIdValid("__A8sa6f5_"));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void isIdValidTooShort() {
+    IdentityCheck.isIdValid("510810541");
+  }
+
+  @Test
+  public void isIdValidValidIdTooLong() {
+    Assert.assertTrue(IdentityCheck.isIdValid("5108105415DTooLong"));
+  }
+
   @Test
   public void isIdValidRandom() {
     for (String id : randomIds) {

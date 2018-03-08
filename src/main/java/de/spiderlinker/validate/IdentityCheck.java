@@ -10,8 +10,8 @@ public class IdentityCheck {
 
   public static boolean isIdValid(String id) {
     Validate.requireNotNull(id);
-    Validate.requireSpecificLengthOrTrim(id, IDENTITY_LENGTH);
-    return checkId(id);
+    String correctedID = Validate.requireSpecificLengthOrTrim(id, IDENTITY_LENGTH);
+    return checkId(correctedID);
   }
 
   private static boolean checkId(String id) {
