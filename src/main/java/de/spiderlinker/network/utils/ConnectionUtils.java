@@ -1,24 +1,37 @@
 package de.spiderlinker.network.utils;
 
-import java.io.*;
-import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLSocket;
+import java.io.*;
+
+/**
+ * This class provides various methods to interact with sockets. <br>
+ * <br> >> Important << <br>
+ * All streams (Input + OutputStreams) of the given sockets will not be closed while calling any method of this class!
+ * The streams may be flushed but never closed. This would cause the socket to close the connection to the other end.
+ * After calling any method in this class you have to close the socket by your own!
+ *
+ * @author Lindemann, Oliver
+ * @since 09.03.2018
+ */
 public class ConnectionUtils {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionUtils.class);
 
   /**
    * Handshake connect request
    */
-  public static final String HANDSHAKE_REQUEST = "HANDSHAKE_REQUEST";
-
+  public static final String HANDSHAKE_REQUEST  = "HANDSHAKE_REQUEST";
   /**
    * Handshake accepted from server
    */
   public static final String HANDSHAKE_ACCEPTED = "HANDSHAKE_ACCEPTED";
-
   /**
    * Handshake denied from server
    */
-  public static final String HANDSHAKE_DENIED = "HANDSHAKE_DENIED";
+  public static final String HANDSHAKE_DENIED   = "HANDSHAKE_DENIED";
 
   /*
    * - - - - - - - - - - Connection handshake - - - - - - - - - -
@@ -30,16 +43,17 @@ public class ConnectionUtils {
    * @param server server to perform handshake with
    * @return success of handshake
    */
-  public static boolean performHandshake(final Socket server) {
+  public static boolean performHandshake(final SSLSocket server) {
+    boolean success = false;
     try {
       ConnectionUtils.println(server, ConnectionUtils.HANDSHAKE_REQUEST);
-      final boolean success = ConnectionUtils.HANDSHAKE_ACCEPTED
-          .equals(ConnectionUtils.readLine(server));
-      return success;
+      success = ConnectionUtils.HANDSHAKE_ACCEPTED.equals(ConnectionUtils.readLine(server));
     } catch (final IOException e) {
+      LOGGER.error("Failed to perform handshake with " + server, e);
     }
 
-    return false;
+    LOGGER.debug("Handshake performed with {} > {}", server, success);
+    return success;
   }
 
   /**
@@ -48,55 +62,49 @@ public class ConnectionUtils {
    * @param client client to perform the handshake with
    * @return success of handshake
    */
-  public static boolean handleHandshake(final Socket client) {
+  public static boolean handleHandshake(final SSLSocket client) {
+    boolean success = false;
     try {
       ConnectionUtils.println(client,
           ConnectionUtils.HANDSHAKE_REQUEST.equals(ConnectionUtils.readLine(client))
-              ? ConnectionUtils.HANDSHAKE_ACCEPTED : ConnectionUtils.HANDSHAKE_DENIED);
-      return true;
+              ? ConnectionUtils.HANDSHAKE_ACCEPTED
+              : ConnectionUtils.HANDSHAKE_DENIED);
+      success = true;
     } catch (final IOException e) {
+      LOGGER.error("Failed to perform handshake with " + client, e);
     }
-    return false;
+
+    LOGGER.debug("Handshake performed with {} > {}", client, success);
+    return success;
   }
 
   /*
-   * - - - - - - - - - - Socket read methods - - - - - - - - - -
+   * - - - - - - - - - - SSLSocket read methods - - - - - - - - - -
    */
 
-  public static int read(final Socket socket) throws IOException {
-    /* Create InputStreamReader */
-    final BufferedReader reader = new BufferedReader(
-        new InputStreamReader(socket.getInputStream()));
-    final int msg = reader.read();// read incoming message
-
-    /* return read message */
-    return msg;
+  public static int read(final SSLSocket socket) throws IOException {
+    return getReaderForSocket(socket).read();
   }
 
-  public static String readLine(final Socket socket) throws IOException {
-    /* Create InputStreamReader */
-    final BufferedReader reader = new BufferedReader(
-        new InputStreamReader(socket.getInputStream()));
-    final String msg = reader.readLine();// read incoming message
-
-    /* return read message */
-    return msg;
+  public static String readLine(final SSLSocket socket) throws IOException {
+    return getReaderForSocket(socket).readLine();
   }
 
-  public static Object readObject(final Socket socket) throws IOException, ClassNotFoundException {
+  private static BufferedReader getReaderForSocket(SSLSocket socket) throws IOException {
+    return new BufferedReader(new InputStreamReader(socket.getInputStream()));
+  }
+
+  public static Object readObject(final SSLSocket socket) throws IOException, ClassNotFoundException {
     /* Create ObjectInputStream */
     final ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-    final Object obj = input.readObject();// read incoming object
-
-    /* return read object */
-    return obj;
+    return input.readObject();
   }
 
   /*
-   * - - - - - - - - - - - Socket write methods - - - - - - - - - - -
+   * - - - - - - - - - - - SSLSocket write methods - - - - - - - - - - -
    */
 
-  public static void print(final Socket socket, final String msg) throws IOException {
+  public static void print(final SSLSocket socket, final String msg) throws IOException {
     /* PrintWriter to print passed message */
     PrintWriter writer = null;
 
@@ -109,7 +117,7 @@ public class ConnectionUtils {
     }
   }
 
-  public static void println(final Socket socket, final String msg) throws IOException {
+  public static void println(final SSLSocket socket, final String msg) throws IOException {
     /* PrintWriter to print passed message */
     PrintWriter writer = null;
 
@@ -129,7 +137,7 @@ public class ConnectionUtils {
    * @param obj    object to be sent
    * @throws IOException error while writing object to host
    */
-  public static void writeObject(final Socket socket, final Object obj) throws IOException {
+  public static void writeObject(final SSLSocket socket, final Object obj) throws IOException {
     /* ObjectOutputStream to print object */
     ObjectOutputStream output = null;
 
@@ -142,55 +150,50 @@ public class ConnectionUtils {
     }
   }
 
-  public static void sendFile(final Socket socket, final File file) throws IOException {
-    /*
-     * BufferedInput- and OutputStreams to read file and send it over
-     * network
-     */
-    try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file));
-         BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream())) {
-      /* create buffer */
-      final byte[] buffer = new byte[1024 * 8];
-      int n = -1;
+  public static void writeFile(final SSLSocket socket, final File file) throws IOException {
+    /* BufferedInput- and OutputStreams to read file and send it over network */
+    try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
+      // Do not put Socket OutputStream in try-with-resources
+      // this will automatically close the socket and connection to client
+      BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
 
-      /* Send file while reading */
-      while ((n = input.read(buffer)) != -1) {
-        /* write file */
-        output.write(buffer, 0, n);
-      }
+      pipeDataFromInputToOutput(input, output);
     }
   }
 
-  public static void receiveFile(final Socket socket, final File fileLocation)
-      throws IOException {
+  public static void readFile(final SSLSocket socket, final File fileLocation) throws IOException {
     /* BufferedInput- and OutputStreams to read incoming file and save it */
-    try (BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
-         BufferedOutputStream output = new BufferedOutputStream( // TODO socket will be closed after receiving -> autoclosable
-             new FileOutputStream(fileLocation))) {
+    // TODO socket will be closed after receiving -> autoclosable
+    try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
+      // Do not put Socket InputStream in try-with-resources
+      // this will automatically close the socket and connection to client
+      BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 
-      /* create buffer */
-      final byte[] buffer = new byte[1024 * 8];
-      int n = -1;
+      pipeDataFromInputToOutput(input, output);
+    }
+  }
 
-      /* Send file while reading */
-      while ((n = input.read(buffer)) != -1) {
-        /* write file */
-        output.write(buffer, 0, n);
-      }
+  private static void pipeDataFromInputToOutput(InputStream input, OutputStream output) throws IOException {
+    final byte[] buffer = new byte[1024 * 8];
+    int n;
+
+    /* read data from input and write it to output */
+    while ((n = input.read(buffer)) != -1) {
+      output.write(buffer, 0, n);
     }
   }
 
   /**
    * Closes the stream quietly, no exception will be thrown
    *
-   * @param c object to close
+   * @param closable object to close
    */
-  public static <C extends AutoCloseable> void close(final C c) {
-    if (c != null) {
+  public static <C extends AutoCloseable> void close(final C closable) {
+    if (closable != null) {
       try {
-        c.close();
+        closable.close();
       } catch (final Exception e) {
-        e.printStackTrace();
+        LOGGER.error("Error while closing AutoClosable", e);
       }
     }
   }
@@ -205,7 +208,7 @@ public class ConnectionUtils {
       try {
         flushable.flush();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.error("Error while flushing Flushable", e);
       }
     }
   }
