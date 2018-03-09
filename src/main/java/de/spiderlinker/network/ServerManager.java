@@ -33,8 +33,8 @@ public abstract class ServerManager {
   }
 
   /**
-   * This method is called when the server is getting initialized Put code in
-   * here to run it before server starts (Nothing in here yet)
+   * This method is called when the server is getting initialized <br>
+   * Put code in here to run it before the server starts (Nothing in here yet)
    */
   protected void initialize() {
   }
@@ -44,22 +44,22 @@ public abstract class ServerManager {
   }
 
   protected void onUnidentifiedMessage(final DataPackage data, final Socket socket) {
-    LOGGER.warn("No implementation for handling of unidentified messages!");
+    LOGGER.warn("No implementation for handling of unidentified messages!\nUnidentified data '{}' from '{}'", data, socket);
   }
 
   public void sendMessage(final String host, final int port, final DataPackage msg)
       throws IOException {
-    this.sendMessage(SocketUtils.createSocket(host, port), msg);
+    this.sendMessage(SocketUtils.createSSLSocket(host, port), msg);
   }
 
-  public void sendMessage(final Socket socket, final DataPackage msg) throws IOException {
+  public void sendMessage(final SSLSocket socket, final DataPackage msg) throws IOException {
     if (socket != null && msg != null) {
       try {
         ConnectionUtils.performHandshake(socket);
         ConnectionUtils.writeObject(socket, msg);
       } catch (final IOException e) {
         /* do stuff -> remove client from clients list */
-
+//TODO
         throw e;
       }
     }
