@@ -6,8 +6,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
+import java.util.Properties;
 
 public class ConnectionUtilsTest {
 
@@ -15,10 +17,12 @@ public class ConnectionUtilsTest {
 
   @Test
   public void performHandshake() {
+    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void handleHandshake() {
+    Assert.fail("Not yet implemented");
   }
 
   @Test
@@ -60,28 +64,53 @@ public class ConnectionUtilsTest {
   }
 
   @Test
-  public void readObject() {
+  public void readObject() throws IOException, ClassNotFoundException {
+    Assert.fail("Not yet implemented!");
   }
 
   @Test
-  public void print() {
+  public void print() throws IOException {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+    SSLSocket socketMock = EasyMock.createMock(SSLSocket.class);
+    EasyMock.expect(socketMock.getOutputStream()).andReturn(outputStream).once();
+    EasyMock.replay(socketMock);
+
+    String testString = "Test";
+    LOGGER.info("Print String via ConnectionUtils#print() : {}", testString);
+    ConnectionUtils.print(socketMock, testString);
+    Assert.assertEquals(testString, outputStream.toString());
+    EasyMock.verify(socketMock);
   }
 
   @Test
-  public void println() {
+  public void println() throws IOException {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+    SSLSocket socketMock = EasyMock.createMock(SSLSocket.class);
+    EasyMock.expect(socketMock.getOutputStream()).andReturn(outputStream).once();
+    EasyMock.replay(socketMock);
+
+    String testString = "Test";
+    LOGGER.info("Print String via ConnectionUtils#printLine() : {}", testString);
+    ConnectionUtils.print(socketMock, testString);
+    Assert.assertEquals(testString, outputStream.toString());
+    EasyMock.verify(socketMock);
   }
 
   @Test
   public void writeObject() {
+    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void writeFile() {
+    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void readFile() {
-
+    Assert.fail("Not yet implemented");
   }
 
   @Test
