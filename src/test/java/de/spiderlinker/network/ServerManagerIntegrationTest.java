@@ -20,21 +20,21 @@ public class ServerManagerIntegrationTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerManagerIntegrationTest.class);
 
   private static final int SERVER_PORT = 56565;
-  private ServerManager server;
+  private static ServerManager server;
 
   @Rule
   public TestName testName = new TestName();
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     server = new ServerManager(SERVER_PORT) {
     };
 
     Assert.assertTrue(server.start());
   }
 
-  @After
-  public void shutdown() {
+  @AfterClass
+  public static void shutdown() {
     server.stop();
   }
 
