@@ -71,7 +71,7 @@ public class ServerManagerIntegrationTest {
   public void testHandleConnectionMultipleClients() {
     LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
-    String testIdOfMessage = "READ_OBJECT";
+    String testIdOfMessage = "READ_OBJECT_MULTIPLE_CLIENTS";
     Properties testObject = new Properties();
     testObject.put("TestKey", "TestValue");
 
