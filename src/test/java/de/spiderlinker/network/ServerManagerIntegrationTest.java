@@ -24,17 +24,12 @@ public class ServerManagerIntegrationTest {
   private ThreadPoolExecutor clientThreadPool;
   private ServerManager      server;
 
-  private Properties testData;
-
   @Rule
   public TestName testName = new TestName();
 
   @Before
   public void setUp() {
     clientThreadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-
-    testData = new Properties();
-    testData.put("TestKey", "TestObject");
 
     server = new ServerManager(SERVER_PORT) {
       @Override
@@ -56,14 +51,13 @@ public class ServerManagerIntegrationTest {
   public void testHandleConnectionReadStringMessage() throws IOException {
     LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
-    Client client = new Client("localhost", SERVER_PORT);
     String testIdOfMessage = "READ_STRING";
     String testString = "This is a String to test\nthe clientSocket-server communication";
 
-    server.registerMethod(testIdOfMessage, (data, socket) -> Assert.assertEquals(testString, data.get(0)));
+    registerMethodReceiveDataAndIncreaseCounter(testIdOfMessage, testString, null);
+    createClientSendMessageAndIncreaseCounter(testIdOfMessage, testString, 0,null);
 
-    LOGGER.info("Sending message {} with id {} from {} to {}", testString, testIdOfMessage, client, server);
-    client.sendMessage(testIdOfMessage, testString);
+    waitUntilAllThreadsFinished();
   }
 
   @Test
@@ -71,9 +65,11 @@ public class ServerManagerIntegrationTest {
     LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
     String testIdOfMessage = "READ_OBJECT";
+    Properties testData = new Properties();
+    testData.put("TestKey", "TestObject");
 
-    registerMethodReceiveDataAndIncreaseCounter(testIdOfMessage, null);
-    createClientSendMessageAndIncreaseCounter(testIdOfMessage, 0, null);
+    registerMethodReceiveDataAndIncreaseCounter(testIdOfMessage, testData, null);
+    createClientSendMessageAndIncreaseCounter(testIdOfMessage, testData, 0, null);
 
     waitUntilAllThreadsFinished();
   }
@@ -91,9 +87,9 @@ public class ServerManagerIntegrationTest {
     IntegerProperty sentDataCount = new SimpleIntegerProperty();
 
     // setup server cautious
-    registerMethodReceiveDataAndIncreaseCounter(testIdOfMessage, receivedDataCount);
+    registerMethodReceiveDataAndIncreaseCounter(testIdOfMessage,testObject, receivedDataCount);
     for (int i = 0; i < dataAmount; i++) {
-      createClientSendMessageAndIncreaseCounter(testIdOfMessage, i, sentDataCount);
+      createClientSendMessageAndIncreaseCounter(testIdOfMessage, testObject, i, sentDataCount);
     }
 
     waitUntilAllThreadsFinished();
@@ -102,7 +98,7 @@ public class ServerManagerIntegrationTest {
     Assert.assertEquals(dataAmount, receivedDataCount.get());
   }
 
-  private void registerMethodReceiveDataAndIncreaseCounter(String idOfData, IntegerProperty counterToIncrease) {
+  private void registerMethodReceiveDataAndIncreaseCounter(String idOfData, Object testData, IntegerProperty counterToIncrease) {
     server.registerMethod(idOfData, (data, socket) -> {
       increaseIfExists(counterToIncrease);
 
@@ -117,7 +113,7 @@ public class ServerManagerIntegrationTest {
     });
   }
 
-  private void createClientSendMessageAndIncreaseCounter(String idOfData, int dataIndex, IntegerProperty counterToIncrease) {
+  private void createClientSendMessageAndIncreaseCounter(String idOfData, Object testData, int dataIndex, IntegerProperty counterToIncrease) {
     submitRunnableToThreadPool(() -> {
       Client client = new Client("localhost", SERVER_PORT);
       try {
