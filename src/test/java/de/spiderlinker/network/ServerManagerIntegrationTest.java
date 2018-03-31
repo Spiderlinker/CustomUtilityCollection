@@ -47,7 +47,7 @@ public class ServerManagerIntegrationTest {
 
     server.registerMethod(testIdOfMessage, (data, socket) -> Assert.assertEquals(testString, data.get(0)));
 
-    LOGGER.debug("Sending message {} with id {} from {} to {}", testString, testIdOfMessage, client, server);
+    LOGGER.info("Sending message {} with id {} from {} to {}", testString, testIdOfMessage, client, server);
     client.sendMessage(testIdOfMessage, testString);
   }
 
