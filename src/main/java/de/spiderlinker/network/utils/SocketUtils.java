@@ -13,19 +13,34 @@ import java.util.List;
 
 public class SocketUtils {
 
-  public static final int PORT_LIMIT = 65535; // or (1 << 16) - 1 || 0xFFFF - 1 || Short.MAX_VALUE - 1...
-  public static final int DEFAULT_LIMIT = 50; // default client connection
+  public static final int PORT_LIMIT      = 65535; // or (1 << 16) - 1 || 0xFFFF - 1 || Short.MAX_VALUE - 1...
+  public static final int DEFAULT_LIMIT   = 50; // default clientSocket connection
   public static final int DEFAULT_TIMEOUT = 3000; // default time out
 
   /**
-   * @param port
-   * @return
+   * @param port Port to be checked
+   * @return passed port if it is valid
    */
   public static int checkPort(int port) {
     if (port < 0 || port > PORT_LIMIT) {
       throw new IllegalArgumentException("Port is not valid (0<port<=" + PORT_LIMIT + ")");
     }
     return port;
+  }
+
+  /**
+   * Checks whether the passed timeout value is valid or not.
+   * The timeout value has to be greater or equal to 0.
+   * If 0 is passed the value will be interpreted as an unlimited timeout.
+   *
+   * @param timeout Timeout to be checked
+   * @return checked timeout
+   */
+  public static int checkTimeout(int timeout) {
+    if (timeout < 0) {
+      throw new IllegalArgumentException("Invalid timeout! (timeout>=0)");
+    }
+    return timeout;
   }
 
   /*
