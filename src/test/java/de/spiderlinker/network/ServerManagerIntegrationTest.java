@@ -81,7 +81,7 @@ public class ServerManagerIntegrationTest {
     server.registerMethod(testIdOfMessage, (data, socket) -> {
       receivedDataCount.set(receivedDataCount.get() + 1);
       Assert.assertEquals(testObject, data.get(0));
-      System.out.println("Received from: " + data.get(1));
+      System.out.println("Received from: " + data.get(0));
       try {
         server.sendMessage(socket, new DataPackage("ok", "OK"));
       } catch (IOException e) {
