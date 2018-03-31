@@ -11,6 +11,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -18,6 +20,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ServerManagerIntegrationTest {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServerManagerIntegrationTest.class);
 
   private static final int SERVER_PORT = 56565;
   private ServerManager server;
@@ -43,6 +47,7 @@ public class ServerManagerIntegrationTest {
 
     server.registerMethod(testIdOfMessage, (data, socket) -> Assert.assertEquals(testString, data.get(0)));
 
+    LOGGER.debug("Sending message {} with id {} from {} to {}", testString, testIdOfMessage, client, server);
     client.sendMessage(testIdOfMessage, testString);
   }
 
