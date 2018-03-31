@@ -57,9 +57,9 @@ public class ConnectionUtils {
   }
 
   /**
-   * Performs a handshake with the connected client
+   * Performs a handshake with the connected clientSocket
    *
-   * @param client client to perform the handshake with
+   * @param client clientSocket to perform the handshake with
    * @return success of handshake
    */
   public static boolean handleHandshake(final SSLSocket client) {
@@ -154,7 +154,7 @@ public class ConnectionUtils {
     /* BufferedInput- and OutputStreams to read file and send it over network */
     try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
       // Do not put Socket OutputStream in try-with-resources
-      // this will automatically close the socket and connection to client
+      // this will automatically close the socket and connection to clientSocket
       BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
 
       pipeDataFromInputToOutput(input, output);
@@ -166,7 +166,7 @@ public class ConnectionUtils {
     // TODO socket will be closed after receiving -> autoclosable
     try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
       // Do not put Socket InputStream in try-with-resources
-      // this will automatically close the socket and connection to client
+      // this will automatically close the socket and connection to clientSocket
       BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 
       pipeDataFromInputToOutput(input, output);

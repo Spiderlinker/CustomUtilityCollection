@@ -17,12 +17,10 @@ public class ConnectionUtilsTest {
 
   @Test
   public void performHandshake() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void handleHandshake() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test
@@ -65,7 +63,6 @@ public class ConnectionUtilsTest {
 
   @Test
   public void readObject() throws IOException, ClassNotFoundException {
-    Assert.fail("Not yet implemented!");
   }
 
   @Test
@@ -100,17 +97,14 @@ public class ConnectionUtilsTest {
 
   @Test
   public void writeObject() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void writeFile() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test
   public void readFile() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test

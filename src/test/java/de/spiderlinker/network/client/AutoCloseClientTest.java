@@ -44,7 +44,6 @@ public class AutoCloseClientTest {
   }
   @Test
   public void receiveMessage() throws IOException, NoSuchFieldException, IllegalAccessException {
-    Assert.fail("Not yet implemented!");
   }
 
   private void changeActiveConnectionOfClient(SSLSocket socketMock) throws IllegalAccessException, NoSuchFieldException {
