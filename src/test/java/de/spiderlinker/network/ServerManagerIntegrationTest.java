@@ -97,9 +97,9 @@ public class ServerManagerIntegrationTest {
         try {
           System.out.println("Sending message: " + currentIndex);
           client.sendMessage(testIdOfMessage, testObject, currentIndex);
+          sentDataCount.setValue(sentDataCount.get() + 1);
           client.receiveMessage();
           client.closeConnection();
-          sentDataCount.setValue(sentDataCount.get() + 1);
         } catch (IOException e) {
           e.printStackTrace();
         }
