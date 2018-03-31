@@ -3,14 +3,10 @@ package de.spiderlinker.network;
 import de.spiderlinker.network.client.Client;
 import de.spiderlinker.network.data.DataPackage;
 import de.spiderlinker.network.server.ServerManager;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +21,9 @@ public class ServerManagerIntegrationTest {
 
   private static final int SERVER_PORT = 56565;
   private ServerManager server;
+
+  @Rule
+  public TestName testName = new TestName();
 
   @Before
   public void setUp() {
@@ -41,6 +40,8 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionReadStringMessage() throws IOException {
+    LOGGER.info("######################## Testing method: " + testName.getMethodName());
+
     Client client = new Client("localhost", SERVER_PORT);
     String testIdOfMessage = "READ_STRING";
     String testString = "This is a String to test\nthe clientSocket-server communication";
@@ -53,6 +54,8 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionReadObjectMessage() throws IOException {
+    LOGGER.info("######################## Testing method: " + testName.getMethodName());
+
     Client client = new Client("localhost", SERVER_PORT);
     String testIdOfMessage = "READ_OBJECT";
 
@@ -66,6 +69,8 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionMultipleClients() {
+    LOGGER.info("######################## Testing method: " + testName.getMethodName());
+
     String testIdOfMessage = "READ_OBJECT";
     Properties testObject = new Properties();
     testObject.put("TestKey", "TestValue");
