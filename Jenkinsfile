@@ -3,7 +3,17 @@ pipeline {
   stages {
     stage('Preparation Stage') {
       steps {
-        echo 'Initialize'
+        sh 'mvn clean'
+      }
+    }
+    stage('Build Stage') {
+      steps {
+        sh 'mvn install'
+      }
+    }
+    stage('Cleanup Stage') {
+      steps {
+        echo 'Should collect test results'
       }
     }
   }
