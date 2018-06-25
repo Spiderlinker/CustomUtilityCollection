@@ -33,5 +33,15 @@ pipeline {
   -Dsonar.login=2a8ca52549d2c4be786c6defb1c94debeca1fdb5'''
       }
     }
+    stage('Store tests') {
+      steps {
+        junit 'target/surefire-resports/**/*.xml'
+      }
+    }
+    stage('Archive artifacts') {
+      steps {
+        archiveArtifacts 'target/*.jar'
+      }
+    }
   }
 }
