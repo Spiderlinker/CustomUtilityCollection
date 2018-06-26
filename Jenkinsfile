@@ -16,19 +16,14 @@ pipeline {
         sh 'mvn install -fae'
       }
     }
-    stage('Store tests') {
+    stage('Archiving Stage') {
       parallel {
-        stage('Archiving Stage') {
-          steps {
-            echo 'Archiving...'
-          }
-        }
-        stage('') {
+        stage('Store JUnit-Test Results') {
           steps {
             junit 'target/surefire-reports/*.xml'
           }
         }
-        stage('') {
+        stage('Archive artifacts') {
           steps {
             archiveArtifacts 'target/*.jar'
           }
