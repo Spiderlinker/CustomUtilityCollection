@@ -28,6 +28,11 @@ pipeline {
             archiveArtifacts 'target/*.jar'
           }
         }
+        stage('Deploy Stage') {
+          steps {
+            sh 'mvn deploy -P dev'
+          }
+        }
       }
     }
     stage('Analyse code') {
