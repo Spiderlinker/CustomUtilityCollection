@@ -8,16 +8,159 @@
     <artifactId>customutilitycollection</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 
+    <properties>
+        <!-- Repository Settings -->
+        <server.url>http://192.168.1.144</server.url>
+        <repository.url>${server.url}:8090/repository/</repository.url>
+        <repository.url.snapshots>${repository.url}snapshots/</repository.url.snapshots>
+        <repository.url.releases>${repository.url}releases/</repository.url.releases>
+        <compile.version>1.8</compile.version>
+
+        <sonar.language>java</sonar.language>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.version>0.8.2</sonar.jacoco.version>
+        <sonar.jacoco.reportPaths>../target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.surefire.reportsPath>../target/surefire-reports/</sonar.surefire.reportsPath>
+        <sonar.host.url>${server.url}:9000/</sonar.host.url>
+        <sonar.java.source>${compile.version}</sonar.java.source>
+        <sonar.java.target>${compile.version}</sonar.java.target>
+
+        <!-- Tycho Surefire Standard-Verhalten -->
+        <TEST_FILTER>**/Test*.java,**/*Test.java,**/*TestCase.java</TEST_FILTER>
+        <TEST_ARGLINE> </TEST_ARGLINE>
+        <tycho.surefire.filter>${TEST_FILTER}</tycho.surefire.filter>
+        <tycho.surefire.argline>${TEST_ARGLINE}</tycho.surefire.argline>
+    </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>archiva.snapshots</id>
+            <url>${repository.url}snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>archiva.releases</id>
+            <url>${repository.url}releases/</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <name.ext>::Dev-Build_${project.artifactId}::</name.ext>
+                <sonar.branch>dev</sonar.branch>
+                <deploy.repoid>snapshots</deploy.repoid>
+                <deploy.url>${repository.url}</deploy.url>
+                <deploy.version>${project.version}</deploy.version>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>snapshots</id>
+                    <name>Archiva Managed Snapshot Repository</name>
+                    <url>${repository.url.snapshots}</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>snapshots</id>
+                    <name>Archiva Managed Snapshot Repository</name>
+                    <url>${repository.url.snapshots}</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <name.ext>::Prod-Build_${project.artifactId}::</name.ext>
+                <sonar.branch>prod</sonar.branch>
+                <deploy.repoid>releases</deploy.repoid>
+                <deploy.url>${repository.url}</deploy.url>
+                <deploy.version>${project.version}</deploy.version>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>releases</id>
+                    <name>Archiva Managed Releases Repository</name>
+                    <url>${repository.url.releases}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>releases</id>
+                    <name>Archiva Managed Releases Repository</name>
+                    <url>${repository.url.releases}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${compile.version}</source>
+                    <target>${compile.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${sonar.jacoco.version}</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>jacoco.agent.argLine</propertyName>
+                            <destFile>${sonar.jacoco.reportPath}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
