@@ -76,9 +76,9 @@ public class SecurityTest {
     String secondHash = Security.hashPasswordWithSalt(simplePassword);
 
     Assert.assertTrue("Verifying against original password should be true",
-        Security.checkPassword(firstHash, simplePassword));
+        Security.checkHashMatchingPassword(firstHash, simplePassword));
     Assert.assertTrue("Verifying against original password should be true",
-        Security.checkPassword(secondHash, simplePassword));
+        Security.checkHashMatchingPassword(secondHash, simplePassword));
   }
 
   @Test
@@ -89,24 +89,24 @@ public class SecurityTest {
     String simplePasswordHash = Security.hashPasswordWithSalt(simplePassword);
 
     Assert.assertTrue("Verifying against original password should be true",
-        Security.checkPassword(simplePasswordHash, simplePassword));
+        Security.checkHashMatchingPassword(simplePasswordHash, simplePassword));
     Assert.assertFalse("Verifying against wrong password should be false",
-        Security.checkPassword(simplePasswordHash, otherPassword));
+        Security.checkHashMatchingPassword(simplePasswordHash, otherPassword));
   }
 
   @Test(expected = NullPointerException.class)
   public void checkPasswordWithNullFirst() {
-    Security.checkPassword(null, "Test");
+    Security.checkHashMatchingPassword(null, "Test");
   }
 
   @Test(expected = NullPointerException.class)
   public void checkPasswordWithNullSecond() {
-    Security.checkPassword("Test", null);
+    Security.checkHashMatchingPassword("Test", null);
   }
 
   @Test(expected = NullPointerException.class)
   public void checkPasswordWithNullBoth() {
-    Security.checkPassword(null, null);
+    Security.checkHashMatchingPassword(null, null);
   }
 
   @Test
