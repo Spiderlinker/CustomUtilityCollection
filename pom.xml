@@ -23,7 +23,7 @@
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.version>0.8.2</sonar.jacoco.version>
-        <sonar.jacoco.reportPaths>../target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.jacoco.reportPath>../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.surefire.reportsPath>../target/surefire-reports/</sonar.surefire.reportsPath>
         <sonar.host.url>${server.url}:9000/</sonar.host.url>
         <sonar.java.source>${compile.version}</sonar.java.source>
@@ -170,19 +170,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${sonar.jacoco.version}</version>
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <dataFile>${sonar.jacoco.reportPath}</dataFile>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                            <propertyName>jacoco.agent.argLine</propertyName>
-                            <destFile>${sonar.jacoco.reportPath}</destFile>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>jacoco-report</id>
