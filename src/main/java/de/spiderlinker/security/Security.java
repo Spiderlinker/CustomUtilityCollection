@@ -54,7 +54,7 @@ public class Security {
    * @param password     Password to validate against
    * @return true, if password hash matches password; false otherwise
    */
-  public static boolean checkPassword(String passwordHash, String password) {
+  public static boolean checkHashMatchingPassword(String passwordHash, String password) {
     return getArgon2Instance().verify(passwordHash, password);
   }
 
