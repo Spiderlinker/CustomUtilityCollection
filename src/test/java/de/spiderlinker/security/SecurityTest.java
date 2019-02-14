@@ -1,23 +1,31 @@
 package de.spiderlinker.security;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SecurityTest {
 
-  @Test(expected = NullPointerException.class)
+  @BeforeEach
+  public void setup() {
+    long start = System.currentTimeMillis();
+    Security.hashPasswordWithSalt("SamplePassword");
+    long end = System.currentTimeMillis();
+    System.out.println("Needed time: " + (end - start) + "ms");
+  }
+
+  @Test
   public void hashPasswordSimpleWithNull() {
-    Security.hashPasswordSimple(null);
+    Assertions.assertThrows(NullPointerException.class, () -> Security.hashPasswordSimple(null));
   }
 
   @Test
   public void hashPasswordSimpleNotSameAsInput() {
     String simplePassword = "SimplePassword";
-    Assert.assertNotEquals("Hashed password should be different from original password!",
-        simplePassword, Security.hashPasswordSimple(simplePassword));
+    Assertions.assertNotEquals(simplePassword, Security.hashPasswordSimple(simplePassword), "Hashed password should be different from original password!");
   }
 
   @Test
@@ -27,7 +35,7 @@ public class SecurityTest {
     String firstHash = Security.hashPasswordSimple(simplePassword);
     String secondHash = Security.hashPasswordSimple(simplePassword);
 
-    Assert.assertEquals("Hashing same password should produce same hash!", firstHash, secondHash);
+    Assertions.assertEquals(firstHash, secondHash, "Hashing same password should produce same hash!");
   }
 
   @Test
@@ -38,7 +46,7 @@ public class SecurityTest {
     String firstHash = Security.hashPasswordSimple(simplePassword);
     String secondHash = Security.hashPasswordSimple(otherPassword);
 
-    Assert.assertNotEquals("Hashing different password should produce different hash!", firstHash, secondHash);
+    Assertions.assertNotEquals(firstHash, secondHash, "Hashing different password should produce different hash!");
   }
 
   @Test
@@ -49,7 +57,7 @@ public class SecurityTest {
     String firstHash = Security.hashPasswordSimple(simplePassword);
     String secondHash = Security.hashPasswordSimple(otherPassword);
 
-    Assert.assertNotEquals("Hashing different password should produce different hash!", firstHash, secondHash);
+    Assertions.assertNotEquals(firstHash, secondHash, "Hashing different password should produce different hash!");
   }
 
   @Test
@@ -59,13 +67,12 @@ public class SecurityTest {
     String firstHash = Security.hashPasswordWithSalt(simplePassword);
     String secondHash = Security.hashPasswordWithSalt(simplePassword);
 
-    Assert.assertNotEquals("Hashing same password with secure random salt should produce different hash!",
-        firstHash, secondHash);
+    Assertions.assertNotEquals(firstHash, secondHash, "Hashing same password with secure random salt should produce different hash!");
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void hashPasswordWithSaltWithNull() {
-    Security.hashPasswordWithSalt(null);
+    Assertions.assertThrows(NullPointerException.class, () -> Security.hashPasswordWithSalt(null));
   }
 
   @Test
@@ -75,10 +82,8 @@ public class SecurityTest {
     String firstHash = Security.hashPasswordWithSalt(simplePassword);
     String secondHash = Security.hashPasswordWithSalt(simplePassword);
 
-    Assert.assertTrue("Verifying against original password should be true",
-        Security.checkHashMatchingPassword(firstHash, simplePassword));
-    Assert.assertTrue("Verifying against original password should be true",
-        Security.checkHashMatchingPassword(secondHash, simplePassword));
+    Assertions.assertTrue(Security.checkHashMatchingPassword(firstHash, simplePassword), "Verifying against original password should be true");
+    Assertions.assertTrue(Security.checkHashMatchingPassword(secondHash, simplePassword), "Verifying against original password should be true");
   }
 
   @Test
@@ -88,33 +93,31 @@ public class SecurityTest {
 
     String simplePasswordHash = Security.hashPasswordWithSalt(simplePassword);
 
-    Assert.assertTrue("Verifying against original password should be true",
-        Security.checkHashMatchingPassword(simplePasswordHash, simplePassword));
-    Assert.assertFalse("Verifying against wrong password should be false",
-        Security.checkHashMatchingPassword(simplePasswordHash, otherPassword));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void checkPasswordWithNullFirst() {
-    Security.checkHashMatchingPassword(null, "Test");
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void checkPasswordWithNullSecond() {
-    Security.checkHashMatchingPassword("Test", null);
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void checkPasswordWithNullBoth() {
-    Security.checkHashMatchingPassword(null, null);
+    Assertions.assertTrue(Security.checkHashMatchingPassword(simplePasswordHash, simplePassword), "Verifying against original password should be true");
+    Assertions.assertFalse(Security.checkHashMatchingPassword(simplePasswordHash, otherPassword), "Verifying against wrong password should be false");
   }
 
   @Test
-  public void generateRandomToken(){
+  public void checkPasswordWithNullFirst() {
+    Assertions.assertThrows(NullPointerException.class, () -> Security.checkHashMatchingPassword(null, "Test"));
+  }
+
+  @Test
+  public void checkPasswordWithNullSecond() {
+    Assertions.assertThrows(NullPointerException.class, () -> Security.checkHashMatchingPassword("Test", null));
+  }
+
+  @Test
+  public void checkPasswordWithNullBoth() {
+    Assertions.assertThrows(NullPointerException.class, () -> Security.checkHashMatchingPassword(null, null));
+  }
+
+  @Test
+  public void generateRandomToken() {
     List<String> generatedTokens = new ArrayList<>();
-    for(int i = 0; i< 10_000; i++) {
+    for (int i = 0; i < 10_000; i++) {
       String token = Security.generateRandomToken();
-      Assert.assertFalse(generatedTokens.contains(token));
+      Assertions.assertFalse(generatedTokens.contains(token));
       generatedTokens.add(token);
     }
   }

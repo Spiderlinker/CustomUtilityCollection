@@ -1,11 +1,10 @@
 package de.spiderlinker.network.client;
 
-import de.spiderlinker.network.data.DataPackage;
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLSocket;
 import java.io.ByteArrayInputStream;
@@ -17,12 +16,12 @@ public class ClientTest {
 
   private Client testClient;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testClient = new Client();
   }
 
-  @After
+  @AfterEach
   public void cleanUp() {
     testClient = null;
   }
@@ -34,19 +33,19 @@ public class ClientTest {
     int testTimeout = 100;
 
     testClient.updateConnection(testHost, testPort, testTimeout);
-    Assert.assertEquals(testHost, testClient.getHost());
-    Assert.assertEquals(testPort, testClient.getPort());
-    Assert.assertEquals(testTimeout, testClient.getTimeout());
+    Assertions.assertEquals(testHost, testClient.getHost());
+    Assertions.assertEquals(testPort, testClient.getPort());
+    Assertions.assertEquals(testTimeout, testClient.getTimeout());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void updateHostNull() {
-    testClient.updateHost(null);
+    Assertions.assertThrows(NullPointerException.class, () -> testClient.updateHost(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void updateHostEmpty() {
-    testClient.updateHost("  ");
+    Assertions.assertThrows(NullPointerException.class, () -> testClient.updateHost("  "));
   }
 
   @Test
@@ -54,38 +53,38 @@ public class ClientTest {
     testClient.updateHost("localhost");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void updatePortOutsideLowerLimit() {
-    testClient.updatePort(-1);
+    Assertions.assertThrows(IllegalArgumentException.class, () -> testClient.updatePort(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void updatePortOutsideUpperLimit() {
-    testClient.updatePort(65536);
+    Assertions.assertThrows(IllegalArgumentException.class, () -> testClient.updatePort(65536));
   }
 
   @Test
   public void updateTimeoutValid() {
     int testTimeout = 1000;
     testClient.updateTimeout(testTimeout);
-    Assert.assertEquals(testTimeout, testClient.getTimeout());
+    Assertions.assertEquals(testTimeout, testClient.getTimeout());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void updateTimeoutOutsideRange() {
-    testClient.updateTimeout(-1);
+    Assertions.assertThrows(IllegalArgumentException.class, () -> testClient.updateTimeout(-1));
   }
 
   @Test
   public void isReachable() {
     testClient.updateHost("localhost");
-    Assert.assertTrue(testClient.isReachable());
+    Assertions.assertTrue(testClient.isReachable());
   }
 
   @Test
   public void isReachableNotReachable() {
     testClient.updateHost("Test");
-    Assert.assertFalse(testClient.isReachable());
+    Assertions.assertFalse(testClient.isReachable());
   }
 
   @Test

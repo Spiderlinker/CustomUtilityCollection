@@ -1,10 +1,9 @@
 package de.spiderlinker.network.client;
 
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLSocket;
 import java.io.ByteArrayInputStream;
@@ -16,12 +15,12 @@ public class AutoCloseClientTest {
 
   private AutoCloseClient testClient;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testClient = new AutoCloseClient();
   }
 
-  @After
+  @AfterEach
   public void cleanUp() {
     testClient = null;
   }

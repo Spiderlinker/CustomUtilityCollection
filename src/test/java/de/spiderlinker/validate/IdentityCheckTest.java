@@ -1,7 +1,7 @@
 package de.spiderlinker.validate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class IdentityCheckTest {
   public void isIdValid() {
     for (String id : validIds) {
       LOGGER.info("Testing valid ID {}", id);
-      Assert.assertTrue(IdentityCheck.isIdValid(id));
+      Assertions.assertTrue(IdentityCheck.isIdValid(id));
     }
   }
 
@@ -24,7 +24,7 @@ public class IdentityCheckTest {
   public void isIdValidUpperCase() {
     for (String id : validIds) {
       LOGGER.info("Testing valid ID (UpperCase) {}", id);
-      Assert.assertTrue(IdentityCheck.isIdValid(id.toUpperCase()));
+      Assertions.assertTrue(IdentityCheck.isIdValid(id.toUpperCase()));
     }
   }
 
@@ -32,39 +32,39 @@ public class IdentityCheckTest {
   public void isIdValidLowerCase() {
     for (String id : validIds) {
       LOGGER.info("Testing valid ID (LowerCase) {}", id);
-      Assert.assertTrue(IdentityCheck.isIdValid(id.toLowerCase()));
+      Assertions.assertTrue(IdentityCheck.isIdValid(id.toLowerCase()));
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void isIdValidNull() {
-    Assert.assertTrue(IdentityCheck.isIdValid(null));
+    Assertions.assertThrows(NullPointerException.class, () -> IdentityCheck.isIdValid(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void isIdValidEmpty() {
-    Assert.assertTrue(IdentityCheck.isIdValid(""));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> IdentityCheck.isIdValid(""));
   }
 
   @Test
   public void isIdValidInvalidChar() {
-    Assert.assertFalse(IdentityCheck.isIdValid("__A8sa6f5_"));
+    Assertions.assertFalse(IdentityCheck.isIdValid("__A8sa6f5_"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void isIdValidTooShort() {
-    IdentityCheck.isIdValid("510810541");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> IdentityCheck.isIdValid("510810541"));
   }
 
   @Test
   public void isIdValidValidIdTooLong() {
-    Assert.assertTrue(IdentityCheck.isIdValid("5108105415DTooLong"));
+    Assertions.assertTrue(IdentityCheck.isIdValid("5108105415DTooLong"));
   }
 
   @Test
   public void isIdValidRandom() {
     for (String id : randomIds) {
-      Assert.assertFalse(IdentityCheck.isIdValid(id));
+      Assertions.assertFalse(IdentityCheck.isIdValid(id));
     }
   }
 
