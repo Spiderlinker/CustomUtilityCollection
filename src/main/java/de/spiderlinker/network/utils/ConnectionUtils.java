@@ -8,7 +8,7 @@ import java.io.*;
 
 /**
  * This class provides various methods to interact with sockets. <br>
- * <br> >> Important << <br>
+ * <br> !! Important !! <br>
  * All streams (Input + OutputStreams) of the given sockets will not be closed while calling any method of this class!
  * The streams may be flushed but never closed. This would cause the socket to close the connection to the other end.
  * After calling any method in this class you have to close the socket by your own!
@@ -23,7 +23,7 @@ public class ConnectionUtils {
   /**
    * Handshake connect request
    */
-  public static final String HANDSHAKE_REQUEST  = "HANDSHAKE_REQUEST";
+  public static final String HANDSHAKE_REQUEST = "HANDSHAKE_REQUEST";
   /**
    * Handshake accepted from server
    */
@@ -31,7 +31,7 @@ public class ConnectionUtils {
   /**
    * Handshake denied from server
    */
-  public static final String HANDSHAKE_DENIED   = "HANDSHAKE_DENIED";
+  public static final String HANDSHAKE_DENIED = "HANDSHAKE_DENIED";
 
   /*
    * - - - - - - - - - - Connection handshake - - - - - - - - - -
@@ -186,7 +186,8 @@ public class ConnectionUtils {
   /**
    * Closes the stream quietly, no exception will be thrown
    *
-   * @param closable object to close
+   * @param closable Object to close
+   * @param <C>      any object which implements AutoClosable
    */
   public static <C extends AutoCloseable> void close(final C closable) {
     if (closable != null) {
@@ -202,6 +203,7 @@ public class ConnectionUtils {
    * Flushes the passed stream quietly, no exception will be thrown
    *
    * @param flushable object to flush
+   * @param <F>       any object which implements Flushable
    */
   public static <F extends Flushable> void flush(final F flushable) {
     if (flushable != null) {
