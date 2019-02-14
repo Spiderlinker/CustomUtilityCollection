@@ -105,7 +105,7 @@ public abstract class ServerManager {
       ConnectionUtils.performHandshake(socket);
       ConnectionUtils.writeObject(socket, msg);
     } catch (final IOException e) {
-      LOGGER.error("Error while sending message to client!", e);
+      LOGGER.error("Error while sending message to client! The client probably closed the connection without saying Good Bye.");
       throw e;
     }
   }
