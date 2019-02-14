@@ -3,34 +3,34 @@ package de.spiderlinker.network.data;
 import de.spiderlinker.utils.StringUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("serial")
 public class DataPackage implements Serializable {
 
-  private String            id;
-  private ArrayList<Object> data;
+  private final String id;
+  private List<Object> dataObjects;
 
   public DataPackage(final String id, final Object... data) {
-    this.setID(id);
+    this.id = StringUtils.requireNonNullOrEmpty(id);
     this.setData(data);
   }
 
-  private void setID(final String id) {
-    this.id = StringUtils.requireNonNullOrEmpty(id);
-  }
-
   private void setData(final Object[] obj) {
-    this.data = new ArrayList<>();
+    this.dataObjects = new LinkedList<>();
     this.addData(obj);
   }
 
   public void addData(final Object... data) {
     if (data != null) {
-      Collections.addAll(this.data, data);
+      Collections.addAll(this.dataObjects, data);
     }
+  }
+
+  public void addData(int index, Object data) {
+    this.dataObjects.add(index, data);
   }
 
   public String getID() {
@@ -38,20 +38,20 @@ public class DataPackage implements Serializable {
   }
 
   public <T extends Object> T get(final int i) {
-    return (T) this.data.get(i);
+    return (T) this.dataObjects.get(i);
   }
 
   public Object getObject(final int i) {
-    return this.data.get(i);
+    return this.dataObjects.get(i);
   }
 
   public List<Object> get() {
-    return this.data;
+    return this.dataObjects;
   }
 
   @Override
   public String toString() {
-    return String.format("[%s] %s", this.id, this.data.toString());
+    return String.format("[%s] %s", this.id, this.dataObjects.toString());
   }
 
 }
