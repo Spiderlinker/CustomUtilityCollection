@@ -21,10 +21,10 @@ public abstract class ServerManager {
   private final Map<String, Executable> registeredMethods = new HashMap<>();
 
   private SSLServerSocket serverSocket;
-  private int             serverListeningPort;
-  private int             clientLimit;
-  private Thread          serverHandleThread;
-  private boolean         isServerAlive;
+  private int serverListeningPort;
+  private int clientLimit;
+  private Thread serverHandleThread;
+  private boolean isServerAlive;
 
   public ServerManager(final int port) {
     this(port, SocketUtils.DEFAULT_LIMIT);
@@ -178,7 +178,7 @@ public abstract class ServerManager {
     LOGGER.info("Method for incoming data with id '{}' found: {} (from address: {})",
         data.getID(), dataHandle != null /* TODO remove this unnecessary output*/, client);
 
-    runExecutableOrDefaultInThread(dataHandle, data, client);
+    runExecutableOrDefault(dataHandle, data, client);
   }
 
   private boolean isDataPackage(Object rawData) {
@@ -189,11 +189,12 @@ public abstract class ServerManager {
     return registeredMethods.get(data.getID());
   }
 
-  private void runExecutableOrDefaultInThread(Executable executable, DataPackage data, SSLSocket client) {
-    new Thread(executable == null // TODO in another thread? There was already one started
-        ? () -> this.onUnidentifiedMessage(data, client) //
-        : () -> executable.run(data, client) //
-    ).start();
+  private void runExecutableOrDefault(Executable executable, DataPackage data, SSLSocket client) {
+    if (executable == null) {
+      this.onUnidentifiedMessage(data, client);
+    } else {
+      executable.run(data, client);
+    }
   }
 
   /**
@@ -218,7 +219,7 @@ public abstract class ServerManager {
   }
 
   /**
-   * Stop the server => stop listening thread and close server socket
+   * Stop the server (stop listening thread and close server socket)
    */
   public void stop() {
     LOGGER.info("Stopping server {}", serverSocket);
