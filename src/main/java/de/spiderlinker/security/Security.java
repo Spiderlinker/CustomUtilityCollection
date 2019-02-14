@@ -12,9 +12,9 @@ public class Security {
 
   private static final Logger LOG = LoggerFactory.getLogger(Security.class);
 
-  private static final int ITERATIONS = 2;
+  private static final int ITERATIONS = 4;
   private static final int MEMORY     = 65536;
-  private static final int THREADS    = 1;
+  private static final int THREADS    = 2;
 
   private static Argon2 argon2Instance;
 
