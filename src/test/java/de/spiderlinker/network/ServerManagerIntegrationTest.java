@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Properties;
@@ -33,7 +34,7 @@ public class ServerManagerIntegrationTest extends AbstractTest {
 
     server = new ServerManager(SERVER_PORT) {
       @Override
-      protected void onUnidentifiedMessage(DataPackage data, Socket socket) {
+      protected void onUnidentifiedMessage(DataPackage data, SSLSocket socket) {
         super.onUnidentifiedMessage(data, socket);
       }
     };
