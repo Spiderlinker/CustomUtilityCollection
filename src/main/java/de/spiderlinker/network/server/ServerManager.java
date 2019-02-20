@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public abstract class ServerManager {
    * @param data   DataPackage that could not be assigned to a registered method
    * @param socket client that sent this data
    */
-  protected void onUnidentifiedMessage(final DataPackage data, final Socket socket) {
+  protected void onUnidentifiedMessage(final DataPackage data, final SSLSocket socket) {
     LOGGER.warn("No implementation for handling of unidentified messages!\nUnidentified data '{}' from '{}'", data, socket);
   }
 
