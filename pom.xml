@@ -31,7 +31,7 @@
 
         <!-- Tycho Surefire Standard-Verhalten -->
         <TEST_FILTER>**/Test*.java,**/*Test.java,**/*TestCase.java</TEST_FILTER>
-        <TEST_ARGLINE></TEST_ARGLINE>
+        <TEST_ARGLINE>{env.MAVEN_OPTS}</TEST_ARGLINE>
         <tycho.surefire.filter>${TEST_FILTER}</tycho.surefire.filter>
         <tycho.surefire.argline>${TEST_ARGLINE}</tycho.surefire.argline>
     </properties>
