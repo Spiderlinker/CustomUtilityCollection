@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="CustomUtilityCollection" />
+        <module name="customutilitycollection" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="customutilitycollection" target="1.8" />
       <module name="CustomUtilityCollection" target="1.8" />
     </bytecodeTargetLevel>
   </component>
