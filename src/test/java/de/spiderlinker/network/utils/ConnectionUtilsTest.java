@@ -1,8 +1,8 @@
 package de.spiderlinker.network.utils;
 
 import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +33,13 @@ public class ConnectionUtilsTest {
 
     int readChar = ConnectionUtils.read(socketMock);
     LOGGER.info("Read char from ConnectionUtils#read() : {}", (char) readChar);
-    Assert.assertEquals('H', readChar);
+    Assertions.assertEquals('H', readChar);
     EasyMock.verify(socketMock);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void readNullSocket() throws IOException {
-    ConnectionUtils.read(null);
+    Assertions.assertThrows(NullPointerException.class, () -> ConnectionUtils.read(null));
   }
 
   @Test
@@ -52,13 +52,13 @@ public class ConnectionUtilsTest {
 
     String readString = ConnectionUtils.readLine(socketMock);
     LOGGER.info("Read String from ConnectionUtils#readLine() : {}", readString);
-    Assert.assertEquals("Hello", readString);
+    Assertions.assertEquals("Hello", readString);
     EasyMock.verify(socketMock);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void readLineNullSocket() throws IOException {
-    ConnectionUtils.readLine(null);
+    Assertions.assertThrows(NullPointerException.class, () -> ConnectionUtils.readLine(null));
   }
 
   @Test
@@ -76,7 +76,7 @@ public class ConnectionUtilsTest {
     String testString = "Test";
     LOGGER.info("Print String via ConnectionUtils#print() : {}", testString);
     ConnectionUtils.print(socketMock, testString);
-    Assert.assertEquals(testString, outputStream.toString());
+    Assertions.assertEquals(testString, outputStream.toString());
     EasyMock.verify(socketMock);
   }
 
@@ -91,7 +91,7 @@ public class ConnectionUtilsTest {
     String testString = "Test";
     LOGGER.info("Print String via ConnectionUtils#printLine() : {}", testString);
     ConnectionUtils.print(socketMock, testString);
-    Assert.assertEquals(testString, outputStream.toString());
+    Assertions.assertEquals(testString, outputStream.toString());
     EasyMock.verify(socketMock);
   }
 

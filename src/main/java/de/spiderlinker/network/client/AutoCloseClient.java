@@ -14,10 +14,19 @@ public class AutoCloseClient extends Client {
     super();
   }
 
+  /**
+   * @param host Host to connect to
+   * @param port Port of host to connect to
+   */
   public AutoCloseClient(String host, int port) {
     super(host, port);
   }
 
+  /**
+   * @param host    Host to connect to
+   * @param port    Port of host to connect to
+   * @param timeout Time to wait for an answer
+   */
   public AutoCloseClient(String host, int port, int timeout) {
     super(host, port, timeout);
   }

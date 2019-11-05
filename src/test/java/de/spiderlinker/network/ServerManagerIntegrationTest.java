@@ -1,22 +1,27 @@
 package de.spiderlinker.network;
 
+import de.spiderlinker.AbstractTest;
 import de.spiderlinker.network.client.Client;
 import de.spiderlinker.network.data.DataPackage;
 import de.spiderlinker.network.server.ServerManager;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import org.junit.*;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class ServerManagerIntegrationTest {
+public class ServerManagerIntegrationTest extends AbstractTest {
 
   private static final Logger LOGGER      = LoggerFactory.getLogger(ServerManagerIntegrationTest.class);
   private static final int    SERVER_PORT = 56565;
@@ -24,10 +29,7 @@ public class ServerManagerIntegrationTest {
   private ThreadPoolExecutor clientThreadPool;
   private ServerManager      server;
 
-  @Rule
-  public TestName testName = new TestName();
-
-  @Before
+  @BeforeEach
   public void setUp() {
     clientThreadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
@@ -38,10 +40,10 @@ public class ServerManagerIntegrationTest {
       }
     };
 
-    Assert.assertTrue(server.start());
+    Assertions.assertTrue(server.start());
   }
 
-  @After
+  @AfterEach
   public void shutdown() {
     server.stop();
     server = null;
@@ -49,7 +51,6 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionReadStringMessage() throws IOException {
-    LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
     String testIdOfMessage = "READ_STRING";
     String testString = "This is a String to test\nthe clientSocket-server communication";
@@ -62,7 +63,6 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionReadObjectMessage() throws IOException {
-    LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
     String testIdOfMessage = "READ_OBJECT";
     Properties testData = new Properties();
@@ -76,7 +76,6 @@ public class ServerManagerIntegrationTest {
 
   @Test
   public void testHandleConnectionMultipleClients() {
-    LOGGER.info("######################## Testing method: " + testName.getMethodName());
 
     String testIdOfMessage = "READ_OBJECT_MULTIPLE_CLIENTS";
     Properties testObject = new Properties();
@@ -94,8 +93,8 @@ public class ServerManagerIntegrationTest {
 
     waitUntilAllThreadsFinished();
 
-    Assert.assertEquals(dataAmount, sentDataCount.get());
-    Assert.assertEquals(dataAmount, receivedDataCount.get());
+    Assertions.assertEquals(dataAmount, sentDataCount.get());
+    Assertions.assertEquals(dataAmount, receivedDataCount.get());
   }
 
   private void registerMethodReceiveDataAndIncreaseCounter(String idOfData, Object testData, IntegerProperty counterToIncrease) {
@@ -103,7 +102,7 @@ public class ServerManagerIntegrationTest {
       increaseIfExists(counterToIncrease);
 
       LOGGER.info("Received data {} from {}", data, socket);
-      Assert.assertEquals(testData, data.get(0));
+      Assertions.assertEquals(testData, data.get(0));
 
       try {
         server.sendMessage(socket, new DataPackage("OK", "Ok"));
@@ -166,7 +165,7 @@ public class ServerManagerIntegrationTest {
 //    BooleanProperty clientRejected = new SimpleBooleanProperty(false);
 //
 //    limitedServer.registerMethod(testIdOfMessage, (data, socket) -> {
-//      Assert.assertEquals(testObject, data.get(0));
+//      Assertions.assertEquals(testObject, data.get(0));
 //      System.out.println("Received from: " + data.get(1));
 //
 //      // Server is busy with first clientSocket (simulate busy state)
@@ -207,7 +206,7 @@ public class ServerManagerIntegrationTest {
 //      }
 //    }
 //    shouldShutdown.set(true);
-//    Assert.assertTrue(clientRejected.get());
+//    Assertions.assertTrue(clientRejected.get());
 //  }
 
 

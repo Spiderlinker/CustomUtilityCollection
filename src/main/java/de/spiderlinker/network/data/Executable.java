@@ -1,9 +1,9 @@
 package de.spiderlinker.network.data;
 
-import javax.net.ssl.SSLSocket;
+import java.net.Socket;
 
 public interface Executable {
 
-    void run(DataPackage msg, SSLSocket socket);
+    void run(DataPackage msg, Socket socket);
 
 }

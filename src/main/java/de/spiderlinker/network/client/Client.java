@@ -5,25 +5,34 @@ import de.spiderlinker.network.utils.ConnectionUtils;
 import de.spiderlinker.network.utils.SocketUtils;
 import de.spiderlinker.utils.StringUtils;
 
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 
 public class Client {
 
-  private String    host;
-  private int       port;
-  private int       timeout;
-  private SSLSocket activeConnection;
+  private String host;
+  private int port;
+  private int timeout;
+  private Socket activeConnection;
 
   public Client() {
     // create empty clientSocket with no information about host or port
   }
 
+  /**
+   * @param host Host to connect to
+   * @param port Port of host to connect to
+   */
   public Client(final String host, final int port) {
     this(host, port, SocketUtils.DEFAULT_TIMEOUT);
   }
 
+  /**
+   * @param host    Host to connect to
+   * @param port    Port of host to connect to
+   * @param timeout Time to wait for an answer
+   */
   public Client(final String host, final int port, int timeout) {
     this.updateConnection(host, port, timeout);
   }
@@ -31,8 +40,9 @@ public class Client {
   /**
    * Updates host and port to the passed values
    *
-   * @param host new host
-   * @param port new port
+   * @param host    new host
+   * @param port    new port
+   * @param timeout Time to wait for an answer
    */
   public void updateConnection(final String host, final int port, int timeout) {
     this.updateHost(host);
@@ -113,7 +123,7 @@ public class Client {
   }
 
   /**
-   * Receives data from established connection (with given host & port)
+   * Receives data from established connection (with given host and port)
    *
    * @return received data from host
    * @throws IOException host not reachable or other network error
@@ -139,7 +149,7 @@ public class Client {
 
   private void establishConnection() throws IOException {
     if (isConnectionClosed()) {
-      activeConnection = SocketUtils.createSSLSocket(host, port, timeout);
+      activeConnection = SocketUtils.createSocket(host, port, timeout);
     }
   }
 

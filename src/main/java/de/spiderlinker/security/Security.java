@@ -12,9 +12,9 @@ public class Security {
 
   private static final Logger LOG = LoggerFactory.getLogger(Security.class);
 
-  private static final int ITERATIONS = 2;
+  private static final int ITERATIONS = 4;
   private static final int MEMORY     = 65536;
-  private static final int THREADS    = 1;
+  private static final int THREADS    = 2;
 
   private static Argon2 argon2Instance;
 
@@ -54,7 +54,7 @@ public class Security {
    * @param password     Password to validate against
    * @return true, if password hash matches password; false otherwise
    */
-  public static boolean checkPassword(String passwordHash, String password) {
+  public static boolean checkHashMatchingPassword(String passwordHash, String password) {
     return getArgon2Instance().verify(passwordHash, password);
   }
 

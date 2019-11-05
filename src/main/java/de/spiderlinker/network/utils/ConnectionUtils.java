@@ -3,12 +3,12 @@ package de.spiderlinker.network.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLSocket;
 import java.io.*;
+import java.net.Socket;
 
 /**
  * This class provides various methods to interact with sockets. <br>
- * <br> >> Important << <br>
+ * <br> !! Important !! <br>
  * All streams (Input + OutputStreams) of the given sockets will not be closed while calling any method of this class!
  * The streams may be flushed but never closed. This would cause the socket to close the connection to the other end.
  * After calling any method in this class you have to close the socket by your own!
@@ -23,7 +23,7 @@ public class ConnectionUtils {
   /**
    * Handshake connect request
    */
-  public static final String HANDSHAKE_REQUEST  = "HANDSHAKE_REQUEST";
+  public static final String HANDSHAKE_REQUEST = "HANDSHAKE_REQUEST";
   /**
    * Handshake accepted from server
    */
@@ -31,7 +31,7 @@ public class ConnectionUtils {
   /**
    * Handshake denied from server
    */
-  public static final String HANDSHAKE_DENIED   = "HANDSHAKE_DENIED";
+  public static final String HANDSHAKE_DENIED = "HANDSHAKE_DENIED";
 
   /*
    * - - - - - - - - - - Connection handshake - - - - - - - - - -
@@ -43,7 +43,7 @@ public class ConnectionUtils {
    * @param server server to perform handshake with
    * @return success of handshake
    */
-  public static boolean performHandshake(final SSLSocket server) {
+  public static boolean performHandshake(final Socket server) {
     boolean success = false;
     try {
       ConnectionUtils.println(server, ConnectionUtils.HANDSHAKE_REQUEST);
@@ -62,7 +62,7 @@ public class ConnectionUtils {
    * @param client clientSocket to perform the handshake with
    * @return success of handshake
    */
-  public static boolean handleHandshake(final SSLSocket client) {
+  public static boolean handleHandshake(final Socket client) {
     boolean success = false;
     try {
       ConnectionUtils.println(client,
@@ -79,32 +79,32 @@ public class ConnectionUtils {
   }
 
   /*
-   * - - - - - - - - - - SSLSocket read methods - - - - - - - - - -
+   * - - - - - - - - - - Socket read methods - - - - - - - - - -
    */
 
-  public static int read(final SSLSocket socket) throws IOException {
+  public static int read(final Socket socket) throws IOException {
     return getReaderForSocket(socket).read();
   }
 
-  public static String readLine(final SSLSocket socket) throws IOException {
+  public static String readLine(final Socket socket) throws IOException {
     return getReaderForSocket(socket).readLine();
   }
 
-  private static BufferedReader getReaderForSocket(SSLSocket socket) throws IOException {
+  private static BufferedReader getReaderForSocket(Socket socket) throws IOException {
     return new BufferedReader(new InputStreamReader(socket.getInputStream()));
   }
 
-  public static Object readObject(final SSLSocket socket) throws IOException, ClassNotFoundException {
+  public static Object readObject(final Socket socket) throws IOException, ClassNotFoundException {
     /* Create ObjectInputStream */
     final ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
     return input.readObject();
   }
 
   /*
-   * - - - - - - - - - - - SSLSocket write methods - - - - - - - - - - -
+   * - - - - - - - - - - - Socket write methods - - - - - - - - - - -
    */
 
-  public static void print(final SSLSocket socket, final String msg) throws IOException {
+  public static void print(final Socket socket, final String msg) throws IOException {
     /* PrintWriter to print passed message */
     PrintWriter writer = null;
 
@@ -117,7 +117,7 @@ public class ConnectionUtils {
     }
   }
 
-  public static void println(final SSLSocket socket, final String msg) throws IOException {
+  public static void println(final Socket socket, final String msg) throws IOException {
     /* PrintWriter to print passed message */
     PrintWriter writer = null;
 
@@ -137,7 +137,7 @@ public class ConnectionUtils {
    * @param obj    object to be sent
    * @throws IOException error while writing object to host
    */
-  public static void writeObject(final SSLSocket socket, final Object obj) throws IOException {
+  public static void writeObject(final Socket socket, final Object obj) throws IOException {
     /* ObjectOutputStream to print object */
     ObjectOutputStream output = null;
 
@@ -150,7 +150,7 @@ public class ConnectionUtils {
     }
   }
 
-  public static void writeFile(final SSLSocket socket, final File file) throws IOException {
+  public static void writeFile(final Socket socket, final File file) throws IOException {
     /* BufferedInput- and OutputStreams to read file and send it over network */
     try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
       // Do not put Socket OutputStream in try-with-resources
@@ -161,7 +161,7 @@ public class ConnectionUtils {
     }
   }
 
-  public static void readFile(final SSLSocket socket, final File fileLocation) throws IOException {
+  public static void readFile(final Socket socket, final File fileLocation) throws IOException {
     /* BufferedInput- and OutputStreams to read incoming file and save it */
     // TODO socket will be closed after receiving -> autoclosable
     try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
@@ -186,7 +186,8 @@ public class ConnectionUtils {
   /**
    * Closes the stream quietly, no exception will be thrown
    *
-   * @param closable object to close
+   * @param closable Object to close
+   * @param <C>      any object which implements AutoClosable
    */
   public static <C extends AutoCloseable> void close(final C closable) {
     if (closable != null) {
@@ -202,6 +203,7 @@ public class ConnectionUtils {
    * Flushes the passed stream quietly, no exception will be thrown
    *
    * @param flushable object to flush
+   * @param <F>       any object which implements Flushable
    */
   public static <F extends Flushable> void flush(final F flushable) {
     if (flushable != null) {

@@ -1,63 +1,64 @@
 package de.spiderlinker.utils;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StringUtilsTest {
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void exceptionToStringWithNullException() {
-    StringUtils.exceptionToString(null);
+    Assertions.assertThrows(NullPointerException.class, () -> StringUtils.exceptionToString(null));
   }
 
   @Test
   public void exceptionToStringValid() {
     String exceptionMessage = "This is a test exception";
     Exception exception = new Exception(exceptionMessage);
-    Assert.assertNotEquals(exceptionMessage, StringUtils.exceptionToString(exception));
-    Assert.assertTrue(StringUtils.exceptionToString(exception).contains(exceptionMessage));
+    Assertions.assertNotEquals(exceptionMessage, StringUtils.exceptionToString(exception));
+    Assertions.assertTrue(StringUtils.exceptionToString(exception).contains(exceptionMessage));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void requireNonNullOrEmptyWithNull() {
-    StringUtils.requireNonNullOrEmpty(null);
+    Assertions.assertThrows(NullPointerException.class, () -> StringUtils.requireNonNullOrEmpty(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void requireNonNullOrEmptyWithEmptyString() {
-    StringUtils.requireNonNullOrEmpty("  ");
+    Assertions.assertThrows(NullPointerException.class, () -> StringUtils.requireNonNullOrEmpty("  "));
   }
 
   @Test
   public void requireNonNullOrEmptyValid() {
     String testString = "notEmpty";
-    Assert.assertEquals(testString, StringUtils.requireNonNullOrEmpty(testString));
+    Assertions.assertEquals(testString, StringUtils.requireNonNullOrEmpty(testString));
   }
 
   @Test
   public void requireNonNullOrEmptyElseWithNull() {
     String elseString = "elseString";
-    Assert.assertEquals(elseString, StringUtils.requireNonNullOrEmptyElse(null, elseString));
+    Assertions.assertEquals(elseString, StringUtils.requireNonNullOrEmptyElse(null, elseString));
   }
 
   @Test
   public void requireNonNullOrEmptyElseWithEmptyString() {
     String elseString = "elseString";
-    Assert.assertEquals(elseString, StringUtils.requireNonNullOrEmptyElse("  ", elseString));
+    Assertions.assertEquals(elseString, StringUtils.requireNonNullOrEmptyElse("  ", elseString));
   }
 
   @Test
   public void requireNonNullOrEmptyElseValid() {
     String testString = "notEmpty";
-    Assert.assertEquals(testString, StringUtils.requireNonNullOrEmptyElse(testString, ""));
+    Assertions.assertEquals(testString, StringUtils.requireNonNullOrEmptyElse(testString, ""));
   }
 
   @Test
   public void isNullOrEmpty() {
-    Assert.assertFalse(StringUtils.isNullOrEmpty("Test"));
+    Assertions.assertFalse(StringUtils.isNullOrEmpty("Test"));
 
-    Assert.assertTrue(StringUtils.isNullOrEmpty(null));
-    Assert.assertTrue(StringUtils.isNullOrEmpty(""));
-    Assert.assertTrue(StringUtils.isNullOrEmpty("  "));
+    Assertions.assertTrue(StringUtils.isNullOrEmpty(null));
+    Assertions.assertTrue(StringUtils.isNullOrEmpty(""));
+    Assertions.assertTrue(StringUtils.isNullOrEmpty("  "));
   }
 }
