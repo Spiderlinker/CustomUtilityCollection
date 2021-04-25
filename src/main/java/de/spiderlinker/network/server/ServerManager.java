@@ -36,7 +36,7 @@ public abstract class ServerManager {
     }
 
     private void setPort(final int port) {
-        this.serverListeningPort = SocketUtils.checkPort(port);
+        this.serverListeningPort = SocketUtils.validatePort(port);
     }
 
     private void setClientLimit(int limit) {

@@ -65,7 +65,7 @@ public class Client {
    * @param port new port to be set
    */
   public void updatePort(final int port) {
-    this.port = SocketUtils.checkPort(port);
+    this.port = SocketUtils.validatePort(port);
   }
 
   /**
@@ -74,7 +74,7 @@ public class Client {
    * @param timeout timeout to be set
    */
   public void updateTimeout(int timeout) {
-    this.timeout = SocketUtils.checkTimeout(timeout);
+    this.timeout = SocketUtils.validateTimeout(timeout);
   }
 
   /**

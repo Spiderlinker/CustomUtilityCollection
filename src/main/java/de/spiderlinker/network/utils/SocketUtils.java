@@ -21,7 +21,7 @@ public class SocketUtils {
    * @param port Port to be checked
    * @return passed port if it is valid
    */
-  public static int checkPort(int port) {
+  public static int validatePort(int port) {
     if (port < 0 || port > PORT_LIMIT) {
       throw new IllegalArgumentException("Port is not valid (0<port<=" + PORT_LIMIT + ")");
     }
@@ -36,7 +36,7 @@ public class SocketUtils {
    * @param timeout Timeout to be checked
    * @return checked timeout
    */
-  public static int checkTimeout(int timeout) {
+  public static int validateTimeout(int timeout) {
     if (timeout < 0) {
       throw new IllegalArgumentException("Invalid timeout! (timeout>=0)");
     }
