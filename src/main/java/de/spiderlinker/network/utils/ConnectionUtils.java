@@ -9,7 +9,7 @@ import java.net.Socket;
 /**
  * This class provides various methods to interact with sockets. <br>
  * <br> !! Important !! <br>
- * All streams (Input + OutputStreams) of the given sockets will not be closed while calling any method of this class!
+ * All streams (Input + OutputStreams) of the given sockets will not be closed while calling any method (except readFile/writeFile) of this class!
  * The streams may be flushed but never closed. This would cause the socket to close the connection to the other end.
  * After calling any method in this class you have to close the socket by your own!
  *
@@ -20,17 +20,11 @@ public class ConnectionUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionUtils.class);
 
-  /**
-   * Handshake connect request
-   */
+  /** Handshake connect request */
   public static final String HANDSHAKE_REQUEST = "HANDSHAKE_REQUEST";
-  /**
-   * Handshake accepted from server
-   */
+  /** Handshake accepted from server */
   public static final String HANDSHAKE_ACCEPTED = "HANDSHAKE_ACCEPTED";
-  /**
-   * Handshake denied from server
-   */
+  /** Handshake denied from server */
   public static final String HANDSHAKE_DENIED = "HANDSHAKE_DENIED";
 
   /*
@@ -100,6 +94,18 @@ public class ConnectionUtils {
     return input.readObject();
   }
 
+  public static void readFile(final Socket socket, final File fileLocation) throws IOException {
+    /* BufferedInput- and OutputStreams to read incoming file and save it */
+    // TODO socket will be closed after receiving -> autoclosable
+    try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
+      // Do not put Socket InputStream in try-with-resources
+      // this will automatically close the socket and connection to clientSocket
+      BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
+
+      pipeDataFromInputToOutput(input, output);
+    }
+  }
+
   /*
    * - - - - - - - - - - - Socket write methods - - - - - - - - - - -
    */
@@ -156,18 +162,6 @@ public class ConnectionUtils {
       // Do not put Socket OutputStream in try-with-resources
       // this will automatically close the socket and connection to clientSocket
       BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
-
-      pipeDataFromInputToOutput(input, output);
-    }
-  }
-
-  public static void readFile(final Socket socket, final File fileLocation) throws IOException {
-    /* BufferedInput- and OutputStreams to read incoming file and save it */
-    // TODO socket will be closed after receiving -> autoclosable
-    try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
-      // Do not put Socket InputStream in try-with-resources
-      // this will automatically close the socket and connection to clientSocket
-      BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 
       pipeDataFromInputToOutput(input, output);
     }
