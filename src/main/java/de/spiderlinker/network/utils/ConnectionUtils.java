@@ -97,10 +97,12 @@ public class ConnectionUtils {
   public static void readFile(final Socket socket, final File fileLocation) throws IOException {
     /* BufferedInput- and OutputStreams to read incoming file and save it */
     // TODO socket will be closed after receiving -> autoclosable
-    try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation))) {
-      // Do not put Socket InputStream in try-with-resources
-      // this will automatically close the socket and connection to clientSocket
-      BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
+    try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(fileLocation));
+         BufferedInputStream input = new BufferedInputStream(socket.getInputStream())) {
+      // -- Do not put Socket InputStream in try-with-resources
+      // -- this will automatically close the socket and connection to clientSocket
+      // >> Reply: It has to be put in try-source and the BufferedInputStream needs to be closed
+      // >> otherwise the file will not be completely transferred
 
       pipeDataFromInputToOutput(input, output);
     }
@@ -158,10 +160,12 @@ public class ConnectionUtils {
 
   public static void writeFile(final Socket socket, final File file) throws IOException {
     /* BufferedInput- and OutputStreams to read file and send it over network */
-    try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
-      // Do not put Socket OutputStream in try-with-resources
-      // this will automatically close the socket and connection to clientSocket
-      BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
+    try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file));
+         BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream())) {
+      // -- Do not put Socket OutputStream in try-with-resources
+      // -- this will automatically close the socket and connection to clientSocket
+      // >> Reply: It has to be put in try-source and the BufferedOutputStream needs to be closed
+      // >> otherwise the file will not be completely transferred
 
       pipeDataFromInputToOutput(input, output);
     }
