@@ -124,7 +124,7 @@ public class ConnectionUtilsTest {
         // This call might not always be the case. This depends on the
         // implementation of the used logger
         exceptionMock.printStackTrace(EasyMock.anyObject(PrintStream.class));
-        EasyMock.expectLastCall().times(0, 1);
+        EasyMock.expectLastCall().once();
 
         Closeable closableMock = EasyMock.createMock(Closeable.class);
         closableMock.close();
@@ -159,7 +159,7 @@ public class ConnectionUtilsTest {
         // This call might not always be the case. This depends on the
         // implementation of the used logger
         exceptionMock.printStackTrace(EasyMock.anyObject(PrintStream.class));
-        EasyMock.expectLastCall().times(0, 1);
+        EasyMock.expectLastCall().once();
 
         Flushable flushableMock = EasyMock.createMock(Flushable.class);
         flushableMock.flush();
